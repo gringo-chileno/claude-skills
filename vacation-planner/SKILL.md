@@ -120,14 +120,34 @@ Ask the user which approach they'd like:
 
 **Always include placeholder fallback** — If any photo fails to download or generate, show a colored rectangle with the key name so the user knows what's missing and can retry.
 
+#### Route Maps
+
+Generate route maps programmatically with **matplotlib** (not AI image generation — it can't do maps accurately).
+
+```bash
+pip install matplotlib
+```
+
+Each map shows the trip flow on a South America outline:
+- **Dashed lines** for flight segments (with airplane icon at midpoint)
+- **Solid lines** for ground routes
+- **Dotted lines** for boat/ferry segments
+- Show **one direction only** (outbound + ground route), not the round trip
+- Use the destination's accent color for all route lines
+- Dark navy background matching the presentation theme
+- City markers with labels offset to avoid overlap
+- For crowded coastal cities, use numbered markers with a legend, or an inset zoom panel
+
+Store a dict of city coordinates `(lon, lat)` and a rough South America coastline polygon (~55 points). Use quadratic Bezier curves for flight arcs.
+
 #### Slide Structure
 
 For each destination (5 slides):
-1. **Hero slide** — Title + tagline + key facts (flight, weather, duration, budget) + hero photo
+1. **Hero slide** — Title + tagline + hero photo (right) + route map (bottom-left)
 2. **Photos slide** — 4 photos in a row with captions
 3. **Activities slide** — Two-column bulleted list of what you'd do there
-4. **Plan slide** — Three-column layout: itinerary | pros | cons + budget footer
-5. **Flight slide** — Real flight data table (outbound options + return info + notes)
+4. **Plan slide** — Day-by-day table with 3 columns: Day number | Date (e.g. "Sat Sep 12") | Plan description. Use actual dates from the trip window. One row per day.
+5. **Why / Why Not slide** — Two-column layout: pros (green) | cons (coral) + budget footer
 
 Plus:
 - **Title slide** — Trip name + dates + thumbnail of each destination
@@ -156,3 +176,4 @@ See `PPTX_TEMPLATE.md` in this skill directory for a complete, working Python sc
 4. **Show, don't tell** — The PowerPoint exists so the family can SEE the destinations, not just read about them
 5. **Respect the audience** — Don't be patronizing about what's "fun" or "exciting." Present the information and let people choose
 6. **Budget transparency** — Always estimate total trip cost (flights x number of people + accommodation + activities), not just per-person flight price
+7. **Seasonal risks** — Research whether destinations have seasonal windows (e.g. lagoons that dry up, wildlife migration, monsoon seasons). Flag when the travel dates fall outside peak season and what the real impact is. A destination that's "good but not great" in the travel window may not be worth including vs. one that's at its peak.
