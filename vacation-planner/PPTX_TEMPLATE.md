@@ -310,6 +310,75 @@ def build_itinerary_slide(prs, title, itinerary_days, pros, cons, cost, accent_c
                 f"Budget: {cost}", font_size=18, color=ACCENT_GOLD, bold=True)
 ```
 
+### Flight Slide (1 per destination)
+```python
+def build_flight_slide(prs, title, accent_color, outbound_header, outbound_flights,
+                       return_header, return_info, notes):
+    """
+    Flight itinerary slide showing real flight options.
+    outbound_flights = [("Depart", "Arrive", "Duration", "Stops", "Price", "Airline"), ...]
+    return_info = string describing return options
+    notes = [string, ...] footnotes
+    """
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    set_slide_bg(slide, BG_DARK)
+    add_textbox(slide, Inches(0.5), Inches(0.3), Inches(12), Inches(0.7),
+                f"{title} — Flights", font_size=28, color=accent_color, bold=True)
+
+    # Outbound header
+    add_textbox(slide, Inches(0.5), Inches(1.1), Inches(6), Inches(0.4),
+                outbound_header, font_size=16, color=ACCENT_GOLD, bold=True)
+
+    # Build outbound table
+    num_rows = len(outbound_flights) + 1
+    num_cols = 6
+    table_shape = slide.shapes.add_table(
+        num_rows, num_cols,
+        Inches(0.5), Inches(1.6), Inches(8), Inches(0.35 * num_rows + 0.3)
+    )
+    table = table_shape.table
+    col_widths = [Inches(1.1), Inches(1.1), Inches(1.2), Inches(1.5), Inches(1.1), Inches(2.0)]
+    for i, w in enumerate(col_widths):
+        table.columns[i].width = w
+
+    # Table header
+    headers = ["Depart", "Arrive", "Duration", "Stops", "Price (RT)", "Airline"]
+    for i, h in enumerate(headers):
+        cell = table.cell(0, i)
+        cell.text = h
+        for p in cell.text_frame.paragraphs:
+            p.font.size = Pt(12); p.font.bold = True; p.font.color.rgb = ACCENT_GOLD
+            p.font.name = "Calibri"; p.alignment = PP_ALIGN.CENTER
+        cell.fill.solid(); cell.fill.fore_color.rgb = RGBColor(0x0d, 0x0d, 0x1a)
+
+    # Table data — highlight "Nonstop" in green
+    for r, flight in enumerate(outbound_flights):
+        row_idx = r + 1
+        bg = RGBColor(0x1f, 0x1f, 0x3a) if r % 2 == 0 else BG_DARK
+        for c, val in enumerate(flight):
+            cell = table.cell(row_idx, c)
+            cell.text = str(val)
+            for p in cell.text_frame.paragraphs:
+                p.font.size = Pt(13); p.font.color.rgb = TEXT_WHITE
+                p.font.name = "Calibri"; p.alignment = PP_ALIGN.CENTER
+                if c == 3 and "Nonstop" in str(val):
+                    p.font.color.rgb = GREEN
+                elif c == 3:
+                    p.font.color.rgb = TEXT_LIGHT
+            cell.fill.solid(); cell.fill.fore_color.rgb = bg
+
+    # Return info on right side
+    add_textbox(slide, Inches(9), Inches(1.1), Inches(4), Inches(0.4),
+                return_header, font_size=16, color=ACCENT_GOLD, bold=True)
+    add_textbox(slide, Inches(9), Inches(1.6), Inches(4), Inches(2.5),
+                return_info, font_size=14, color=TEXT_LIGHT)
+
+    # Notes at bottom
+    if notes:
+        note_lines = [(n, False, TEXT_LIGHT, 12) for n in notes]
+        add_multiline_textbox(slide, Inches(0.5), Inches(6.2), Inches(12), Inches(1.2), note_lines)
+```
+
 ### Comparison Slide
 ```python
 def build_comparison_slide(prs, dest_names, dest_colors, categories, scores_matrix, budgets):

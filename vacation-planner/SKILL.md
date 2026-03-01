@@ -122,11 +122,12 @@ Ask the user which approach they'd like:
 
 #### Slide Structure
 
-For each destination (4 slides):
+For each destination (5 slides):
 1. **Hero slide** — Title + tagline + key facts (flight, weather, duration, budget) + hero photo
 2. **Photos slide** — 4 photos in a row with captions
 3. **Activities slide** — Two-column bulleted list of what you'd do there
 4. **Plan slide** — Three-column layout: itinerary | pros | cons + budget footer
+5. **Flight slide** — Real flight data table (outbound options + return info + notes)
 
 Plus:
 - **Title slide** — Trip name + dates + thumbnail of each destination
